@@ -1,0 +1,17 @@
+{
+    "name": "daily-report-creator",
+    "type": "module",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "description": "",
+    "main": "index.js",
+    "dependencies": {
+        "@notionhq/client": "^1.0.1",
+        "cli-progress": "^3.10.0",
+        "clipboardy": "^3.0.0",
+        "dotenv": "^16.0.0",
+        "ntqdm": "^1.0.0"
+    }
+}

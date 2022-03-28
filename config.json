@@ -1,0 +1,11 @@
+{
+    "PendingTasks":"To Do",
+    "DoingTasks":"Doing",
+    "FinishedTasks": "Done 🙌",
+    "Texts": {
+        "CurrentStatusFinished": "TERMINADA",
+        "CurrentStatusDoing": "EN CURSO",
+        "BeginningOfMessage": "Mi parte diario de hoy es el siguiente:\n",
+        "PendingTasksBeginning": "\nTareas pendientes:\n"
+    }
+}
