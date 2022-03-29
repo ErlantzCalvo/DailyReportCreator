@@ -3,11 +3,16 @@ import dotenv from "dotenv"
 dotenv.config()
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY })
-const databaseId = process.env.NOTION_PAGE_ID
 
 export async function getTasks() {
-    return notion.databases.query({ database_id: databaseId })
-  
+    let databaseId = process.env.NOTION_PAGE_ID
+    var response = notion.databases.query({ database_id: databaseId }).then(response =>{
+      return response
+    }).catch(error => {
+      console.error("Error: " + error)
+      process.exit(1)
+    })
+    return response
   }
 
 export async function getTaskContent(taskId) {
