@@ -7,7 +7,7 @@ Having the following Notion Scrum-like ToDo page
 
 This project creates the following report:
 
-<img src="https://github.com/ErlantzCalvo/DailyReportCreator/blob/main/media/output_example.png?raw=true" alt="Generated report" width="800"/>
+<img src="https://github.com/ErlantzCalvo/DailyReportCreator/blob/main/media/output_example.png?raw=true" alt="Generated report" width="700"/>
 
 # Installation
 Clone the repo:<br>
@@ -44,3 +44,21 @@ Or <br>
 ### Options
 -c or --to-clipboard : Copy the resulting report to the clipboard. <br>
 -h or --help : Display the available options.
+  
+# Configuration
+The app need to know which is the title for each status. This is, in the picture of the notion page (At the top of this README) it can be seen that the 3 status names are *To Do, Doing* and *Done 🙌*. This three names must be put in the `config.json` file:
+```
+  "PendingTasks":"To Do",
+  "DoingTasks":"Doing",
+  "FinishedTasks": "Done 🙌"
+```
+
+  It can also be configured the texts that will be displayed in the output in the *Texts* field:
+  ```
+  "Texts": {
+        "CurrentStatusFinished": "FINISHED",
+        "CurrentStatusDoing": "IN PROGRESS",
+        "BeginningOfMessage": "My daily report today is as follows:\n",
+        "PendingTasksBeginning": "\nPending tasks:\n"
+    }
+  ```
