@@ -3,9 +3,9 @@
     "DoingTasks":"Doing",
     "FinishedTasks": "Done 🙌",
     "Texts": {
-        "CurrentStatusFinished": "TERMINADA",
-        "CurrentStatusDoing": "EN CURSO",
-        "BeginningOfMessage": "Mi parte diario de hoy es el siguiente:\n",
-        "PendingTasksBeginning": "\nTareas pendientes:\n"
+        "CurrentStatusFinished": "FINISHED",
+        "CurrentStatusDoing": "IN PROGRESS",
+        "BeginningOfMessage": "My daily report today is as follows:\n",
+        "PendingTasksBeginning": "\nPending tasks:\n"
     }
 }
