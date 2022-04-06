@@ -65,16 +65,19 @@ function writeDailyReport(tasks){
       let taskName = Object.keys(tasks[config.PendingTasks][i])[0]
       report += `- ${taskName}\n` 
       for(let subtask of tasks[config.PendingTasks][i][taskName]){
-        report += `\t${Object.keys(subtask)[0]}\n`
+        if(!Object.values(subtask)[0])
+          report += `\t${Object.keys(subtask)[0]}\n`
       }
     }
   }
+
+  report += config.Texts.Farewell
 
   return report
 }
 
 async function createDailyReport() {
-  // We get all the tasks (ToDo, Doing and Done)
+  // We get all the tasks (i.e. ToDo, Doing and Done)
   var tasks = await notionService.getTasks()
 
   // we separate them by their status
