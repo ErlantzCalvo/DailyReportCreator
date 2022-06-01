@@ -3,7 +3,7 @@
     "type": "module",
     "version": "1.0.0",
     "scripts": {
-        "start": "node --no-warnings index.js"
+        "start": "node --no-warnings index.js -c"
     },
     "description": "",
     "main": "index.js",

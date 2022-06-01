@@ -8,26 +8,32 @@ const args = process.argv.slice(2)
 
 async function classifyTasks(tasks){
   console.log("Nº of tasks: " + tasks.results.length)
+
   var classifiedTasks = {}
-  var bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.rect);
-  bar1.start(tasks.results.length, 0, {
+  var progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.rect);
+  
+  let tasksContent = tasks.results.map(result => {
+    return notionService.getTaskContent(result.id);
+  })
+  
+  progressBar.start(tasks.results.length, 0, {
     clearOnComplete: true
   })
-  await Promise.all(tasks.results.map(async(result) => {
-    await notionService.getTaskContent(result.id).then(taskContent =>{
-      bar1.increment()
-      let newTask = {}
-      newTask[result.properties.Name.title[0].plain_text] = taskContent
-  
-      if(classifiedTasks.hasOwnProperty(result.properties.Status.select.name)){
-        classifiedTasks[result.properties.Status.select.name].push(newTask)
-      }else{
-        classifiedTasks[result.properties.Status.select.name] = [newTask]
-      }
+  let results = await Promise.all(tasksContent);
+  for(let i in results) {
+    progressBar.increment();
 
-    })
-  }))
-  bar1.stop()
+    let newTask = {};
+    newTask[tasks.results[i].properties.Name.title[0].plain_text] = results[i];
+
+    if(classifiedTasks.hasOwnProperty(tasks.results[i].properties.Status.select.name)) {
+        classifiedTasks[tasks.results[i].properties.Status.select.name].push(newTask)
+      } else {
+        classifiedTasks[tasks.results[i].properties.Status.select.name] = [newTask]
+      }
+  }
+
+  progressBar.stop()
   return classifiedTasks
 }
 
@@ -37,36 +43,30 @@ function writeDailyReport(tasks){
 
   let report = config.Texts.BeginningOfMessage
   
-  // First write the finished tasks
-  let i = 0
-  if (config.FinishedTasks in tasks)
-    for(; i < tasks[config.FinishedTasks].length; i++){
-      let taskName = Object.keys(tasks[config.FinishedTasks][i])[0]
-      report += `\n${i+1}) ${taskName} --> ${config.Texts.CurrentStatusFinished}\n`
-      for(let subtask of tasks[config.FinishedTasks][i][taskName]){
-        report += `\t- ${Object.keys(subtask)[0]} --> ${(subtask[Object.keys(subtask)[0]])? `${config.Texts.CurrentStatusFinished}\n`: `${config.Texts.CurrentStatusDoing}\n`}` 
+  let tasksStatuses = Object.keys(config.TasksStatus);
+  let taskNum=0;
+  for(let status of tasksStatuses) {
+    let statusText = config.TasksStatus[status]
+    if (statusText in tasks && status !== 'PendingTasks')
+    for(let i = 0; i < tasks[statusText].length; i++, taskNum++){
+      let taskName = Object.keys(tasks[statusText][i])[0]
+      report += `\n${taskNum+1}) ${taskName} --> ${config.Texts[status+'Status'] || ''}\n`
+      for(let subtask of tasks[statusText][i][taskName]){
+        report += `      - ${Object.keys(subtask)[0]} --> ${(subtask[Object.keys(subtask)[0]])? `${config.Texts.FinishedTasksStatus}\n`: `${config.Texts.DoingTasksStatus}\n`}` 
       }
     }
+  }
 
-    // Second, write the Currently active tasks
-  if(config.DoingTasks in tasks)
-    for(let j=0; j < (tasks[config.DoingTasks].length ); j++){
-      let taskName = Object.keys(tasks[config.DoingTasks][j])[0]
-      report += `\n${i+j+1}) ${taskName} --> ${config.Texts.CurrentStatusDoing}\n`
-      for(let subtask of tasks[config.DoingTasks][j][taskName]){
-        report += `\t- ${Object.keys(subtask)[0]} --> ${(subtask[Object.keys(subtask)[0]])? `${config.Texts.CurrentStatusFinished}\n`: `${config.Texts.CurrentStatusDoing}\n`}` 
-      }
-    }
 
-    // finally, write the pending tasks
-  if(config.PendingTasks in tasks){
+  //finally, write the pending tasks
+  if(config.TasksStatus.PendingTasks in tasks){
     report += config.Texts.PendingTasksBeginning
-    for(let i = 0; i < (tasks[config.PendingTasks].length); i++){
-      let taskName = Object.keys(tasks[config.PendingTasks][i])[0]
+    for(let i = 0; i < (tasks[config.TasksStatus.PendingTasks].length); i++){
+      let taskName = Object.keys(tasks[config.TasksStatus.PendingTasks][i])[0]
       report += `- ${taskName}\n` 
-      for(let subtask of tasks[config.PendingTasks][i][taskName]){
+      for(let subtask of tasks[config.TasksStatus.PendingTasks][i][taskName]){
         if(!Object.values(subtask)[0])
-          report += `\t${Object.keys(subtask)[0]}\n`
+          report += `      ${Object.keys(subtask)[0]}\n`
       }
     }
   }
