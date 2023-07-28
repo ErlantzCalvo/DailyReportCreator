@@ -1,7 +1,9 @@
 {
-    "PendingTasks":"To Do",
-    "DoingTasks":"Doing",
-    "FinishedTasks": "Done 🙌",
+    "TasksStatus": {
+        "PendingTasks":"To Do",
+        "DoingTasks":"Doing",
+        "FinishedTasks": "Done 🙌"
+    },
     "Texts": {
         "CurrentStatusFinished": "FINISHED",
         "CurrentStatusDoing": "IN PROGRESS",
