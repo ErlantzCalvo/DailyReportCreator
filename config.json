@@ -5,9 +5,10 @@
         "FinishedTasks": "Done 🙌"
     },
     "Texts": {
-        "CurrentStatusFinished": "FINISHED",
-        "CurrentStatusDoing": "IN PROGRESS",
+        "FinishedTasksStatus": "FINISHED",
+        "DoingTasksStatus": "IN PROGRESS",
         "BeginningOfMessage": "My daily report today is as follows:\n",
-        "PendingTasksBeginning": "\nPending tasks:\n"
+        "PendingTasksBeginning": "\nPending tasks:\n",
+        "Farewell": "\nRegards,"
     }
 }
