@@ -19,17 +19,18 @@ async function classifyTasks(tasks){
   progressBar.start(tasks.results.length, 0, {
     clearOnComplete: true
   })
-  let results = await Promise.all(tasksContent);
-  for(let i in results) {
+  tasksContent = await Promise.all(tasksContent);
+  for(let i in tasksContent) {
     progressBar.increment();
 
     let newTask = {};
-    newTask[tasks.results[i].properties.Name.title[0].plain_text] = results[i];
+    const taskName = tasks.results[i].properties.Name.title[0]?.plain_text;
+    newTask[taskName] = tasksContent[i];
 
-    if(classifiedTasks.hasOwnProperty(tasks.results[i].properties.Status.select.name)) {
-        classifiedTasks[tasks.results[i].properties.Status.select.name].push(newTask)
+    if(classifiedTasks.hasOwnProperty(tasks.results[i].properties.Status.select?.name)) {
+        classifiedTasks[tasks.results[i].properties.Status.select?.name].push(newTask)
       } else {
-        classifiedTasks[tasks.results[i].properties.Status.select.name] = [newTask]
+        classifiedTasks[tasks.results[i].properties.Status.select?.name] = [newTask]
       }
   }
 
@@ -50,9 +51,9 @@ function writeDailyReport(tasks){
     if (statusText in tasks && status !== 'PendingTasks')
     for(let i = 0; i < tasks[statusText].length; i++, taskNum++){
       let taskName = Object.keys(tasks[statusText][i])[0]
-      report += `\n${taskNum+1}) ${taskName} --> ${config.Texts[status+'Status'] || ''}\n`
+      report += `\n${taskNum+1}) ${taskName} →  ${config.Texts[status+'Status'] || ''}\n`
       for(let subtask of tasks[statusText][i][taskName]){
-        report += `      - ${Object.keys(subtask)[0]} --> ${(subtask[Object.keys(subtask)[0]])? `${config.Texts.FinishedTasksStatus}\n`: `${config.Texts.DoingTasksStatus}\n`}` 
+        report += `      - ${Object.keys(subtask)[0]} → ${(subtask[Object.keys(subtask)[0]])? `${config.Texts.FinishedTasksStatus}\n`: `${config.Texts.DoingTasksStatus}\n`}` 
       }
     }
   }
@@ -79,7 +80,6 @@ function writeDailyReport(tasks){
 async function createDailyReport() {
   // We get all the tasks (i.e. ToDo, Doing and Done)
   var tasks = await notionService.getTasks()
-
   // we separate them by their status
   let classifiedTasks = await classifyTasks(tasks)
 
